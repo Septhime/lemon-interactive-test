@@ -15,7 +15,6 @@ parameters:
         - vendor/autoload.php
 
     symfony:
-        containerXmlPath: var/cache/dev/App_KernelDevDebugContainer.xml
         constantHassers: false
         consoleApplicationLoader: bin/console
 
