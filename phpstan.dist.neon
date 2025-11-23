@@ -1,8 +1,31 @@
 parameters:
-    level: 6
+    level: max
+
     paths:
-        - bin/
-        - config/
-        - public/
         - src/
         - tests/
+
+    excludePaths:
+        - var/
+        - vendor/
+        - public/
+        - tests/bootstrap.php
+
+    bootstrapFiles:
+        - vendor/autoload.php
+
+    symfony:
+        containerXmlPath: var/cache/dev/App_KernelDevDebugContainer.xml
+        constantHassers: false
+        consoleApplicationLoader: bin/console
+
+    doctrine:
+        repositoryClass: App\Repository
+
+    checkExplicitMixedMissingReturn: true
+    checkFunctionNameCase: true
+    checkInternalClassCaseSensitivity: true
+    checkTooWideReturnTypesInProtectedAndPublicMethods: true
+    checkMissingCallableSignature: true
+    reportUnmatchedIgnoredErrors: true
+    treatPhpDocTypesAsCertain: false
