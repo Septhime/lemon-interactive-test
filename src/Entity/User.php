@@ -3,6 +3,8 @@
 namespace App\Entity;
 
 use App\Repository\UserRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
@@ -37,6 +39,24 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 
     #[ORM\Column(length: 100)]
     private string $lastName;
+
+    /**
+     * @var Collection<int, Event>
+     */
+    #[ORM\OneToMany(targetEntity: Event::class, mappedBy: 'owner')]
+    private Collection $ownedEvents;
+
+    /**
+     * @var Collection<int, Event>
+     */
+    #[ORM\ManyToMany(targetEntity: Event::class, mappedBy: 'participants')]
+    private Collection $events;
+
+    public function __construct()
+    {
+        $this->ownedEvents = new ArrayCollection();
+        $this->events = new ArrayCollection();
+    }
 
     public function getId(): ?int
     {
@@ -145,6 +165,58 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function setLastName(string $lastName): static
     {
         $this->lastName = $lastName;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Event>
+     */
+    public function getOwnedEvents(): Collection
+    {
+        return $this->ownedEvents;
+    }
+
+    public function addOwnedEvent(Event $event): static
+    {
+        if (!$this->ownedEvents->contains($event)) {
+            $this->ownedEvents->add($event);
+            $event->setOwner($this);
+        }
+
+        return $this;
+    }
+
+    public function removeOwnedEvent(Event $event): static
+    {
+        $this->ownedEvents->removeElement($event);
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Event>
+     */
+    public function getEvents(): Collection
+    {
+        return $this->events;
+    }
+
+    public function addEvent(Event $event): static
+    {
+        if (!$this->events->contains($event)) {
+            $this->events->add($event);
+            $event->addParticipant($this);
+        }
+
+        return $this;
+    }
+
+    public function removeEvent(Event $event): static
+    {
+        if ($this->events->removeElement($event)) {
+            $event->removeParticipant($this);
+        }
 
         return $this;
     }
