@@ -16,14 +16,20 @@ class EventRepository extends ServiceEntityRepository
         parent::__construct($registry, Event::class);
     }
 
+    /**
+     * @return array<Event>
+     */
     public function findAllFutureEvents(): array
     {
-        $qb = $this->createQueryBuilder('e')
+        /** @var array<Event> $result */
+        $result = $this->createQueryBuilder('e')
             ->where('e.begin >= :now')
             ->setParameter('now', new \DateTime())
-            ->orderBy('e.begin', 'ASC');
+            ->orderBy('e.begin', 'ASC')
+            ->getQuery()
+            ->getResult();
 
-        return $qb->getQuery()->getResult();
+        return $result;
     }
 
     //    /**
