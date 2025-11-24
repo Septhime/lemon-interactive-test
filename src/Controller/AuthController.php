@@ -40,6 +40,7 @@ final class AuthController extends AbstractController
             $userRepository->save($user, true);
 
             $this->addFlash('success', 'Votre compte a été créé avec succès. Vous pouvez maintenant vous connecter.');
+
             return $this->redirectToRoute('app_index');
         }
 
