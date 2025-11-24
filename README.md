@@ -1,4 +1,4 @@
-# Gestionnaire d'Événements - Lemon Interactive Test
+# Gestionnaire d'Événements - Test pour Lemon Interactive
 
 Application web de gestion d'événements développée avec Symfony 7.3 et PHP 8.3+.
 
@@ -131,7 +131,7 @@ Le projet suit une architecture avec séparation des responsabilités :
 Controller → Service → Repository → Entity
 ```
 
-#### Séparation des services métier
+### Séparation des services métier
  
   L'application utilise 3 services distincts au lieu d'un seul service monolithique :
   
@@ -141,7 +141,7 @@ Controller → Service → Repository → Entity
 
 Cela permet une meilleure organisation du code, facilite les tests unitaires, permet de réutiliser les services et améliore la maintenabilité.
 
-#### Validation côté serveur avec Symfony Form
+### Validation côté serveur avec Symfony Form
 Utilisation de Symfony Forms (`EventType`, `UserRegistrationType`) pour :
 - Validation automatique des données
 - Protection CSRF intégrée
@@ -150,7 +150,7 @@ Utilisation de Symfony Forms (`EventType`, `UserRegistrationType`) pour :
 
 Permet d'avoir une validation robuste et respecte les conventions Symfony.
 
-#### Utilisation d'AssetMapper
+### Utilisation d'AssetMapper
 
 L'application utilise AssetMapper pour gérer les assets (CSS, JS) :
 - Compilation et minification des fichiers
