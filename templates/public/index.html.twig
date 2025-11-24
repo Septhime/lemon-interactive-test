@@ -1,0 +1,87 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Événements à venir{% endblock %}
+
+{% block body %}
+<div class="container py-5">
+    <div class="row mb-4">
+        <div class="col">
+            <div class="d-flex justify-content-end mb-3">
+                {% if app.user %}
+                    <a href="{{ path('app_logout') }}" class="btn btn-outline-danger">
+                        <i class="bi bi-box-arrow-right"></i> Déconnexion
+                    </a>
+                {% else %}
+                    <a href="{{ path('app_login') }}" class="btn btn-outline-primary me-2">
+                        <i class="bi bi-box-arrow-in-right"></i> Connexion
+                    </a>
+                    <a href="{{ path('app_signup') }}" class="btn btn-primary">
+                        <i class="bi bi-person-plus"></i> Inscription
+                    </a>
+                {% endif %}
+            </div>
+            <h1 class="display-4 text-center mb-4">Événements à venir</h1>
+            <p class="lead text-center text-muted">Découvrez les prochains événements disponibles</p>
+        </div>
+    </div>
+
+    {% if events is empty %}
+        <div class="row">
+            <div class="col-md-8 mx-auto">
+                <div class="alert alert-info text-center" role="alert">
+                    <h4 class="alert-heading">Aucun événement à venir</h4>
+                    <p>Il n'y a actuellement aucun événement planifié. Revenez plus tard pour découvrir de nouveaux événements !</p>
+                </div>
+            </div>
+        </div>
+    {% else %}
+        <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
+            {% for event in events %}
+                <div class="col">
+                    <div class="card h-100 shadow-sm">
+                        <div class="card-body">
+                            <h5 class="card-title">{{ event.title }}</h5>
+
+                            {% if event.description %}
+                                <p class="card-text text-muted">{{ event.description }}</p>
+                            {% endif %}
+
+                            <hr>
+
+                            <div class="mb-2">
+                                <i class="bi bi-calendar-event"></i>
+                                <strong>Début :</strong> {{ event.begin|date('d/m/Y à H:i') }}
+                            </div>
+
+                            <div class="mb-2">
+                                <i class="bi bi-calendar-check"></i>
+                                <strong>Fin :</strong> {{ event.endDate|date('d/m/Y à H:i') }}
+                            </div>
+
+                            <div class="mb-2">
+                                <i class="bi bi-geo-alt"></i>
+                                <strong>Lieu :</strong> {{ event.location }}
+                            </div>
+
+                            <div class="mb-2">
+                                <i class="bi bi-person"></i>
+                                <strong>Organisateur :</strong> {{ event.owner.firstname }} {{ event.owner.lastname }}
+                            </div>
+
+                            <div>
+                                <i class="bi bi-people"></i>
+                                <strong>Participants :</strong>
+                                <span class="badge bg-primary">{{ event.participants|length }}</span>
+                            </div>
+                        </div>
+
+                        <div class="card-footer bg-transparent">
+                            <a href="#" class="btn btn-primary w-100">Voir les détails</a>
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    {% endif %}
+</div>
+{% endblock %}
