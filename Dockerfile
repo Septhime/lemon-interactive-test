@@ -95,3 +95,8 @@ RUN set -eux; \
 	composer dump-env prod; \
 	composer run-script --no-dev post-install-cmd; \
 	chmod +x bin/console; sync;
+
+# Compile asset \
+RUN php bin/console asset-map:compile
+# Load fixtures
+RUN php bin/console doctrine:fixtures:load --no-interaction

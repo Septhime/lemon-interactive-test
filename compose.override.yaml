@@ -1,6 +1,6 @@
-
+---
+# Development environment override
 services:
-  ###> symfony ###
   php:
     build:
       context: .
