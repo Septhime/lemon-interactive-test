@@ -59,16 +59,36 @@
                     {% endif %}
                 </div>
 
-                {% if app.user and app.user == event.owner %}
-                    <div class="mt-4">
-                        <a href="{{ path('app_event_edit', {'id': event.id}) }}" class="btn btn-warning">Modifier</a>
+                <div class="mt-4">
+                    {% if app.user %}
+                        {% if app.user == event.owner %}
+                            <a href="{{ path('app_event_edit', {'id': event.id}) }}" class="btn btn-warning">Modifier</a>
 
-                        <form method="post" action="{{ path('app_event_delete', {'id': event.id}) }}" style="display:inline;" onsubmit="return confirm('Êtes-vous sûr de vouloir supprimer cet événement ?');">
-                            <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ event.id) }}">
-                            <button type="submit" class="btn btn-danger">Supprimer</button>
-                        </form>
-                    </div>
-                {% endif %}
+                            <form method="post" action="{{ path('app_event_delete', {'id': event.id}) }}" style="display:inline;" onsubmit="return confirm('Êtes-vous sûr de vouloir supprimer cet événement ?');">
+                                <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ event.id) }}">
+                                <button type="submit" class="btn btn-danger">Supprimer</button>
+                            </form>
+                        {% else %}
+                            {% if event.participants.contains(app.user) %}
+                                <form method="post" action="{{ path('app_event_unsubscribe', {'id': event.id}) }}" style="display:inline;">
+                                    <input type="hidden" name="_token" value="{{ csrf_token('unsubscribe' ~ event.id) }}">
+                                    <button type="submit" class="btn btn-danger">
+                                        <i class="bi bi-x-circle"></i> Se désinscrire
+                                    </button>
+                                </form>
+                            {% else %}
+                                <form method="post" action="{{ path('app_event_subscribe', {'id': event.id}) }}" style="display:inline;">
+                                    <input type="hidden" name="_token" value="{{ csrf_token('subscribe' ~ event.id) }}">
+                                    <button type="submit" class="btn btn-success">
+                                        <i class="bi bi-check-circle"></i> S'inscrire
+                                    </button>
+                                </form>
+                            {% endif %}
+                        {% endif %}
+                    {% else %}
+                        <a href="{{ path('app_login') }}" class="btn btn-primary">Connectez-vous pour vous inscrire</a>
+                    {% endif %}
+                </div>
             </div>
         </div>
     </div>

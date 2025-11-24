@@ -14,6 +14,23 @@ use Symfony\Component\Security\Http\Attribute\IsGranted;
 
 final class EventController extends AbstractController
 {
+    #[Route('/my-events', name: 'app_my_events')]
+    #[IsGranted('ROLE_USER')]
+    public function myEvents(): Response
+    {
+        /** @var User $user */
+        $user = $this->getUser();
+        if (!$user) {
+            throw new \LogicException('User must be logged in to view their events.');
+        }
+
+        $events = $user->getEvents();
+
+        return $this->render('event/my-events.html.twig', [
+            'events' => $events,
+        ]);
+    }
+
     #[Route('/event/{id}', name: 'app_event_show', requirements: ['id' => '\d+'])]
     public function show(Event $event): Response
     {
@@ -109,5 +126,69 @@ final class EventController extends AbstractController
         }
 
         return $this->redirectToRoute('app_index');
+    }
+
+    #[Route('/event/{id}/subscribe', name: 'app_event_subscribe', methods: ['POST'])]
+    #[IsGranted('ROLE_USER')]
+    public function subscribe(Request $request, Event $event, EntityManagerInterface $entityManager): Response
+    {
+        /** @var User $user */
+        $user = $this->getUser();
+        if (!$user) {
+            throw new \LogicException('User must be logged in to subscribe to an event.');
+        }
+
+        $token = $request->request->get('_token');
+
+        if (!is_string($token) || !$this->isCsrfTokenValid('subscribe'.$event->getId(), $token)) {
+            $this->addFlash('error', 'Jeton CSRF invalide.');
+
+            return $this->redirectToRoute('app_event_show', ['id' => $event->getId()]);
+        }
+
+        if ($event->getParticipants()->contains($user)) {
+            $this->addFlash('error', 'Vous êtes déjà inscrit à cet événement.');
+
+            return $this->redirectToRoute('app_event_show', ['id' => $event->getId()]);
+        }
+
+        $event->addParticipant($user);
+        $entityManager->flush();
+
+        $this->addFlash('success', 'Vous êtes maintenant inscrit à cet événement.');
+
+        return $this->redirectToRoute('app_event_show', ['id' => $event->getId()]);
+    }
+
+    #[Route('/event/{id}/unsubscribe', name: 'app_event_unsubscribe', methods: ['POST'])]
+    #[IsGranted('ROLE_USER')]
+    public function unsubscribe(Request $request, Event $event, EntityManagerInterface $entityManager): Response
+    {
+        /** @var User $user */
+        $user = $this->getUser();
+        if (!$user) {
+            throw new \LogicException('User must be logged in to unsubscribe from an event.');
+        }
+
+        $token = $request->request->get('_token');
+
+        if (!is_string($token) || !$this->isCsrfTokenValid('unsubscribe'.$event->getId(), $token)) {
+            $this->addFlash('error', 'Jeton CSRF invalide.');
+
+            return $this->redirectToRoute('app_event_show', ['id' => $event->getId()]);
+        }
+
+        if (!$event->getParticipants()->contains($user)) {
+            $this->addFlash('error', 'Vous n\'êtes pas inscrit à cet événement.');
+
+            return $this->redirectToRoute('app_event_show', ['id' => $event->getId()]);
+        }
+
+        $event->removeParticipant($user);
+        $entityManager->flush();
+
+        $this->addFlash('success', 'Vous êtes maintenant désinscrit de cet événement.');
+
+        return $this->redirectToRoute('app_event_show', ['id' => $event->getId()]);
     }
 }

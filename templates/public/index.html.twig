@@ -8,6 +8,9 @@
         <div class="col">
             <div class="d-flex justify-content-end mb-3">
                 {% if app.user %}
+                    <a href="{{ path('app_my_events') }}" class="btn btn-outline-secondary me-2">
+                        <i class="bi bi-calendar-check"></i> Mes événements
+                    </a>
                     <a href="{{ path('app_event_new') }}" class="btn btn-success me-2">
                         <i class="bi bi-plus-circle"></i> Créer un événement
                     </a>
@@ -116,7 +119,29 @@
                     </div>
 
                     <div class="card-footer bg-transparent">
-                        <a href="{{ path('app_event_show', {'id': event.id}) }}" class="btn btn-primary w-100">Voir les détails</a>
+                        <div class="d-grid gap-2">
+                            <a href="{{ path('app_event_show', {'id': event.id}) }}" class="btn btn-primary">Voir les détails</a>
+
+                            {% if app.user %}
+                                {% if app.user != event.owner %}
+                                    {% if event.participants.contains(app.user) %}
+                                        <form method="post" action="{{ path('app_event_unsubscribe', {'id': event.id}) }}">
+                                            <input type="hidden" name="_token" value="{{ csrf_token('unsubscribe' ~ event.id) }}">
+                                            <button type="submit" class="btn btn-danger w-100">
+                                                <i class="bi bi-x-circle"></i> Se désinscrire
+                                            </button>
+                                        </form>
+                                    {% else %}
+                                        <form method="post" action="{{ path('app_event_subscribe', {'id': event.id}) }}">
+                                            <input type="hidden" name="_token" value="{{ csrf_token('subscribe' ~ event.id) }}">
+                                            <button type="submit" class="btn btn-success w-100">
+                                                <i class="bi bi-check-circle"></i> S'inscrire
+                                            </button>
+                                        </form>
+                                    {% endif %}
+                                {% endif %}
+                            {% endif %}
+                        </div>
                     </div>
                 </div>
             </div>
