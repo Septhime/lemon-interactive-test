@@ -39,7 +39,8 @@ final class AuthController extends AbstractController
             $user->setPassword($hashedPassword);
             $userRepository->save($user, true);
 
-            return $this->redirectToRoute('app_signup');
+            $this->addFlash('success', 'Votre compte a été créé avec succès. Vous pouvez maintenant vous connecter.');
+            return $this->redirectToRoute('app_index');
         }
 
         return $this->render('auth/signup.html.twig', [
