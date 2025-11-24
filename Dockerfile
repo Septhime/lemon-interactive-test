@@ -98,5 +98,3 @@ RUN set -eux; \
 
 # Compile asset \
 RUN php bin/console asset-map:compile
-# Load fixtures
-RUN php bin/console doctrine:fixtures:load --no-interaction
