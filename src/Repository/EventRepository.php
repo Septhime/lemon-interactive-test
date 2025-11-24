@@ -19,15 +19,29 @@ class EventRepository extends ServiceEntityRepository
     /**
      * @return array<Event>
      */
-    public function findAllFutureEvents(): array
+    public function findByDateRange(?\DateTime $start = null, ?\DateTime $end = null): array
     {
+        $qb = $this->createQueryBuilder('e');
+
+        if (null === $start && null === $end) {
+            // Si aucune date n'est spécifiée, retourner les événements futurs
+            $qb->where('e.begin >= :now')
+                ->setParameter('now', new \DateTime());
+        } else {
+            if (null !== $start) {
+                $qb->andWhere('e.begin >= :start')
+                    ->setParameter('start', $start);
+            }
+            if (null !== $end) {
+                $qb->andWhere('e.begin <= :end')
+                    ->setParameter('end', $end);
+            }
+        }
+
+        $qb->orderBy('e.begin', 'ASC');
+
         /** @var array<Event> $result */
-        $result = $this->createQueryBuilder('e')
-            ->where('e.begin >= :now')
-            ->setParameter('now', new \DateTime())
-            ->orderBy('e.begin', 'ASC')
-            ->getQuery()
-            ->getResult();
+        $result = $qb->getQuery()->getResult();
 
         return $result;
     }
