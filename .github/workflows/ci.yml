@@ -59,7 +59,7 @@ jobs:
 
       - name: Run PHPStan
         run: |
-          docker run --rm -v $(pwd):/app app:test vendor/bin/phpstan analyze
+          docker run --rm -v $(pwd):/app app:test vendor/bin/phpstan analyze --memory-limit=256M
 
       - name: Run PHPUnit
         run: |
