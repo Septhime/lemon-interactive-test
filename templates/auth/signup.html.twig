@@ -3,7 +3,32 @@
 {% block title %}Inscription{% endblock %}
 
 {% block body %}
-    <h1>Inscription</h1>
+    <div class="container mt-5">
+        <div class="row justify-content-center">
+            <div class="col-md-6">
+                <div class="card shadow-sm">
+                    <div class="card-body">
+                        <h1 class="text-center mb-4">Inscription</h1>
 
-    {{ form(registrationForm) }}
+                        {{ form(registrationForm) }}
+
+                        <hr class="my-4">
+
+                        <div class="text-center">
+                            <p class="mb-2">Vous avez déjà un compte ?</p>
+                            <a href="{{ path('app_login') }}" class="btn btn-outline-secondary">
+                                <i class="bi bi-box-arrow-in-right"></i> Se connecter
+                            </a>
+                        </div>
+
+                        <div class="text-center mt-3">
+                            <a href="{{ path('app_index') }}" class="btn btn-link">
+                                <i class="bi bi-arrow-left"></i> Retour à l'accueil
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 {% endblock %}
