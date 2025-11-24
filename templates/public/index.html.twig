@@ -8,6 +8,9 @@
         <div class="col">
             <div class="d-flex justify-content-end mb-3">
                 {% if app.user %}
+                    <a href="{{ path('app_event_new') }}" class="btn btn-success me-2">
+                        <i class="bi bi-plus-circle"></i> Créer un événement
+                    </a>
                     <a href="{{ path('app_logout') }}" class="btn btn-outline-danger">
                         <i class="bi bi-box-arrow-right"></i> Déconnexion
                     </a>
@@ -24,6 +27,20 @@
             <p class="lead text-center text-muted">Découvrez les prochains événements disponibles</p>
         </div>
     </div>
+
+    {% for message in app.flashes('success') %}
+        <div class="alert alert-success alert-dismissible fade show" role="alert">
+            {{ message }}
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+    {% endfor %}
+
+    {% for message in app.flashes('error') %}
+        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+            {{ message }}
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+    {% endfor %}
 
     <div class="row mb-4 w-full">
         <div class="col-md-8 mx-auto">
@@ -99,7 +116,7 @@
                     </div>
 
                     <div class="card-footer bg-transparent">
-                        <a href="#" class="btn btn-primary w-100">Voir les détails</a>
+                        <a href="{{ path('app_event_show', {'id': event.id}) }}" class="btn btn-primary w-100">Voir les détails</a>
                     </div>
                 </div>
             </div>
